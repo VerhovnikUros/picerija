@@ -1,0 +1,449 @@
+using System;
+using System.Collections.Generic;
+using System.Collections;
+using System.Linq;
+using System.Text;
+using System.IO;
+using System.Xml.Serialization;
+using System.Threading.Tasks;
+
+namespace Bincl_Test
+{
+   public  enum Spol { moski, zenska }
+   public enum Stranka { nic,republikanska, demokratska }
+
+    public class Volilci
+    {
+        private string Ime;
+        private string Priimek;
+        private int Starost;
+        private Spol Spol;
+        private Stranka Stranka;
+        private bool Kandidat;
+        private string Glasovna_koda;
+        public List<Volilci> list_volilcev = new List<Volilci>();
+
+
+        public string ime
+        {
+            get { return Ime; }
+            set { Ime = value; }
+        }
+
+        public string priimek
+        {
+            get { return Priimek; }
+            set { Priimek = value; }
+        }
+
+        public int starost
+        {
+            get { return Starost; }
+            set { Starost = value; }
+        }
+
+        public Spol spol
+        {
+            get { return Spol; }
+            set { Spol = value; }
+        }
+
+        public Stranka stranka
+        {
+            get { return Stranka; }
+            set { Stranka = value; }
+        }
+
+
+        public bool kandidat
+        {
+            get { return Kandidat; }
+            set { Kandidat = value; }
+        }
+
+
+        public string glasovna_koda
+        {
+            get { return Glasovna_koda; }
+            set { Glasovna_koda = value; }
+        }
+        public Volilci() { }
+        
+
+
+        public Volilci(string ime, string priimek)
+        {
+            this.ime = ime;
+            this.priimek = priimek;
+        }
+        public Volilci(string ime, string priimek, int starost, Spol spol, Stranka stranka, bool kandidat, string glasovna_koda)
+            : this(ime, priimek)
+        {
+            this.starost = starost;
+            this.spol = spol;
+            this.stranka = stranka;
+            this.kandidat = kandidat;
+            this.glasovna_koda = glasovna_koda;
+
+        }
+
+        public void Izpisi()
+        {
+            Console.WriteLine( "Ime: " + ime + " " + "Priimek: " + priimek + " " + "Starost: " + starost + " " + "Spol: " + spol + " " + "Stranka: " + stranka + " " + "Kandidat: " + kandidat + " " + "Glasovna koda: " + glasovna_koda);
+        }
+
+        public bool volilni_upravicenci()
+        {
+            if (starost >= 18)
+            {
+                return true;
+               // Console.WriteLine(ime + " " + priimek + " " + starost + " " + spol + " " + kandidat + " " + stranka + " " + glasovna_koda);
+            }
+            else
+            {
+                return false;
+                //Console.WriteLine("Oseba ni polnoletna!");
+            }
+        }
+
+        public string izpis_glede_na_stranko()
+        {
+            if (stranka == Stranka.demokratska)
+            {
+                return "Ime: " + ime + " " + "Priimek: " +priimek + " " + "Starost: " + starost + " " + "Spol: " +spol + " " + "Kandidat: " +kandidat + " " + "Stranka: " + stranka + " " + "Glasovna koda: " + glasovna_koda;
+            }
+            if (stranka == Stranka.republikanska)
+            {
+               return "Ime: " + ime + " " + "Priimek: " + priimek + " " + "Starost: " + starost + " " + "Spol: " + spol + " " + "Kandidat: " + kandidat + " " + "Stranka: " + stranka + " " + "Glasovna koda: " + glasovna_koda;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        
+        public void  izpis_rezultatov_volitev(List<Volilci> seznam_volitev)
+        {
+           
+        }
+       
+
+        /*public  int  najstarejsa_oseba()
+         {
+             int zacasna_starost=0;
+
+             foreach (var x in list_volilcev)
+              {
+		 
+     
+             if (starost!=zacasna_starost)
+             {
+                 if (zacasna_starost < x.starost)
+                 {
+                     zacasna_starost = x;
+                 }
+             }
+             else
+             {
+                 zacasna_starost = x;
+             }
+             }
+             return zacasna_starost;
+
+    }*/
+
+
+
+        public class TEST
+        {
+
+            public static List<Volilci> PreberiIzDatoteke()
+            {
+                string path = @"C:\Users\Uroš\Desktop\Test (dodatni rok)\podatki_dodatni_test.csv";
+                List<Volilci> seznam_volilcev = new List<Volilci>();
+                string[] x = File.ReadAllLines(path);
+
+                for (int i = 1; i < x.Length; i++)
+                {
+                    string vrstica = x[i];
+                    int stevec = 0;
+                    int j = 0;
+                    string ime = " ";
+                    string priimek = " ";
+                    int starost = 0;
+                    string spol = " ";
+                    string kandidat = " ";
+                    string stranka = " ";
+                    string glasovna_koda = " ";
+
+                    while (vrstica.Length != 0)
+                    {
+                        if (vrstica.Length == j)
+                        {
+                            glasovna_koda = vrstica;
+                            break;
+                        }
+
+                        if (vrstica[j] == ';')
+                        {
+                            switch (stevec)
+                            {
+                                case 0:
+                                    ime = vrstica.Substring(0, j);
+                                    vrstica = vrstica.Substring(j + 1);
+                                    stevec++;
+                                    j = 0;
+                                    break;
+
+                                case 1:
+                                    priimek = vrstica.Substring(0, j);
+                                    vrstica = vrstica.Substring(j + 1);
+                                    stevec++;
+                                    j = 0;
+                                    break;
+
+                                case 2:
+                                    starost =int.Parse( vrstica.Substring(0, j));
+                                    vrstica = vrstica.Substring(j + 1);
+                                    stevec++;
+                                    j = 0;
+                                    break;
+
+                                case 3:
+                                    spol = vrstica.Substring(0, j);
+                                    vrstica = vrstica.Substring(j + 1);
+                                    stevec++;
+                                    j = 0;
+                                    break;
+
+                                case 4:
+                                    kandidat = vrstica.Substring(0, j);
+                                    vrstica = vrstica.Substring(j + 1);
+                                    stevec++;
+                                    j = 0;
+                                    break;
+
+                                case 5:
+                                    stranka = vrstica.Substring(0, j);
+                                    vrstica = vrstica.Substring(j + 1);
+                                    stevec++;
+                                    j = 0;
+                                    break;
+
+                                case 6:
+                                    glasovna_koda = vrstica.Substring(0, j);
+                                    vrstica = vrstica.Substring(j + 1);
+                                    stevec++;
+                                    j = 0;
+                                    break;
+
+                            }
+                        }
+
+                        j++;
+                    }
+
+                    Volilci nov_volilec = new Volilci();
+                    nov_volilec.ime = ime;
+                    nov_volilec.priimek = priimek;
+                    nov_volilec.starost = starost;
+                    if (spol == "0")
+                    {
+                        nov_volilec.spol = Spol.moski;
+                    }
+
+                    if (spol == "1")
+                    {
+                        nov_volilec.spol = Spol.zenska;
+                    }
+
+                    if (kandidat == "0")
+                    {
+                        nov_volilec.kandidat = false;
+                    }
+
+                    if (kandidat == "1")
+                    {
+                        nov_volilec.kandidat = true;
+                    }
+
+                    if (stranka == "Republikanska")
+                    {
+                        nov_volilec.stranka = Stranka.republikanska;
+                    }
+
+                    if (stranka == "Demokratska")
+                    {
+                        nov_volilec.stranka = Stranka.demokratska;
+                    }
+                    if (glasovna_koda == ";")
+                    {
+                        glasovna_koda = null;
+
+                    }
+                    else
+                    {
+                        nov_volilec.glasovna_koda = glasovna_koda;
+                    }
+
+                    seznam_volilcev.Add(nov_volilec);
+
+                }
+
+                return seznam_volilcev;
+
+            }
+
+            public static List<Volilci> Razporeditev(List<Volilci> seznamVOLILCEV)
+            {
+
+                List<Volilci> volilciii = new List<Volilci>();
+
+
+                volilciii = seznamVOLILCEV.OrderBy(c => c.priimek).ToList();
+
+               
+
+                seznamVOLILCEV.Clear();
+
+                for (int i = 0; i < volilciii.Count; i++)
+                {
+                    seznamVOLILCEV.Add(volilciii[i]);
+                }
+
+                return seznamVOLILCEV;
+            }
+
+
+            static void Main(string[] args)
+            {
+                Volilci volilec1 = new Volilci("Teja", "Bincl", 20, Spol.zenska, Stranka.republikanska, true, "1234");
+                volilec1.Izpisi();
+                Console.WriteLine();
+                volilec1.volilni_upravicenci();
+                volilec1.izpis_glede_na_stranko();
+                Console.WriteLine();
+                Console.WriteLine();
+
+                Volilci volilec2 = new Volilci("Marko", "Kompan", 15, Spol.moski, Stranka.demokratska, false, "4321");
+                volilec2.Izpisi();
+                Console.WriteLine();
+                volilec2.volilni_upravicenci();
+                volilec2.izpis_glede_na_stranko();
+                Console.WriteLine();
+                Console.WriteLine();
+
+            
+                List<Volilci> seznamVolilcev = new List<Volilci>();
+                
+                seznamVolilcev = PreberiIzDatoteke();
+
+                Console.WriteLine("volilci");
+                int i = 0;
+                int j = 0;
+                int k = 0;
+                List<Volilci> dd = new List<Volilci>();
+                List<Volilci> rr = new List<Volilci>();
+                List<Volilci> razporejeno = new List<Volilci>();
+                razporejeno = Razporeditev(seznamVolilcev);
+
+                foreach (var volilec in razporejeno)
+                {
+                    if (volilec.kandidat == false && volilec.volilni_upravicenci()==true)
+                    {
+                    
+
+                            Array d = Enum.GetValues( typeof( Stranka));
+
+                        Random r = new Random();
+
+                        Stranka haah = (Stranka)d.GetValue(r.Next(d.Length));
+
+
+                        Console.WriteLine("Ime: " + volilec.ime + " " + "Priimek: " + volilec.priimek + " " + "Starost: " + volilec.starost + " " + "Spol: " + volilec.spol + " " + "Kandidat: " + volilec.kandidat + " " + "Stranka: " + haah  );
+
+
+                        if (haah ==Stranka.republikanska)
+                        {
+                            dd.Add(seznamVolilcev[i]);
+                            i++;
+                        }
+                        else if (haah == Stranka.demokratska)
+                        {
+                            rr.Add(seznamVolilcev[j]);
+                            j++;
+                        }
+                        else
+                        {
+                            k++;
+                        }
+                    }
+                }
+
+                Console.WriteLine();
+                long z = 0;
+                long n = 0;
+
+                Console.WriteLine("republikanci :"+i*100 / (i+j+k)+"%");
+                
+                
+                Console.WriteLine("demokrati :"+j *100/ (i + j + k) + "%");
+             
+                Console.WriteLine("se ni udeležilo:"+k*100 /  (i + j + k) + "%");
+                if (i>j&&i>k)
+                    {
+                    Console.WriteLine("republikanci zmagajo ");
+                    foreach (var bla in rr)
+                    {
+                        if (bla.spol == Spol.moski)
+                            z++;
+                        else
+                            n++;
+                    }
+                    Console.WriteLine("Moški: " + z * 100 / (z + n) + "%");
+                    Console.WriteLine("Ženske: " + n * 100 / (z + n) + "%");
+                }
+                    else if(j>k&&j>i)
+                {
+                    Console.WriteLine("demokrati zmagajo ");
+                    foreach (var bla in dd)
+                    {
+                        if (bla.spol == Spol.moski)
+                            z++;
+                        else
+                            n++;
+                    }
+                    Console.WriteLine("Moški: " + z * 100 / (z + n) + "%");
+                    Console.WriteLine("Ženske: " + n * 100 / (z + n) + "%");
+                }
+                else if (i > j) Console.WriteLine("republikanci zmagajo");
+                else if (j > i) Console.WriteLine("demokrati zmagajo");
+                else Console.WriteLine("ponovno");
+
+                Console.WriteLine("volilna udeležba :"+ (i+j)*100 / (i+j+k)+"%");
+                
+                Console.WriteLine();
+                Volilci najstarejsi_volilec = seznamVolilcev.Find(x => x.starost == seznamVolilcev.Max(y => y.starost));
+                Console.Write("Najstarejša oseba: ");
+                najstarejsi_volilec.Izpisi();
+                Console.WriteLine();
+
+                
+                var kandidati = from a in seznamVolilcev orderby a.stranka select a;
+                foreach (var u in kandidati)
+                {
+                    if (u.kandidat == true)
+                        Console.WriteLine(u.Ime+" "+u.priimek + "++++" + u.stranka);
+                }
+
+
+                Stream stream = File.OpenWrite(Environment.CurrentDirectory + "\\bla.txt");
+                XmlSerializer xml = new XmlSerializer(typeof(List<Volilci>));
+                xml.Serialize(stream, seznamVolilcev);
+                stream.Close();
+                Console.ReadLine();
+            }
+        }
+    }
+}
